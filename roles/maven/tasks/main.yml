@@ -1,0 +1,48 @@
+- name: Install Java
+  apt:
+    name: openjdk-17-jdk
+    state: present
+    update_cache: yes
+
+- name: Download Maven
+  get_url:
+    url: https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+    dest: /tmp/maven.tar.gz
+
+- name: Extract Maven
+  unarchive:
+    src: /tmp/maven.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Symlink Maven directory
+  file:
+    src: /opt/apache-maven-3.9.6
+    dest: /opt/maven
+    state: link
+
+- name: Add Maven to PATH
+  copy:
+    dest: /etc/profile.d/maven.sh
+    mode: '0755'
+    content: |
+      export M2_HOME=/opt/maven
+      export PATH=${M2_HOME}/bin:${PATH}
+      
+- name: Install Maven
+  apt:
+    name: maven
+    state: present
+    update_cache: yes
+  become: true
+
+
+- name: Clone project
+  git:
+    repo: 'https://github.com/mehziya/spring-petclinic.git'
+    dest: /home/ubuntu/app
+
+- name: Build WAR file
+  command: mvn package
+  args:
+    chdir: /home/ubuntu/app
