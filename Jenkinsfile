@@ -3,9 +3,9 @@ pipeline {
     
     tools {
         // Define tools with the names you set in Global Tool Configuration
-        terraform 'ttff'  // This uses the tool with the name 'terraform'
-        ansible 'aann'      // This uses the tool with the name 'ansible'
-        maven 'mmvvnn'      // This uses the tool with the name 'maven'
+        terraform 'terra'  // This uses the tool with the name 'terraform'
+        ansible 'ansible'      // This uses the tool with the name 'ansible'
+        maven 'maven'      // This uses the tool with the name 'maven'
     }
     environment {
         AWS_ACCESS_KEY = credentials('AWS_KEY')
@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout Repository') {
             steps {
-                git branch: 'master', url: 'https://github.com/NubeEra-ImranAli/spring-boot-war-example.git'
+                git branch: 'master', url: 'https://github.com/patanfouziya/spring-petclinic.git'
             }
         }
 
