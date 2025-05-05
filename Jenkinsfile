@@ -60,8 +60,8 @@ pipeline {
                  
                     // Define the servers and their IPs in a map
                     def servers = [
-                        "tomcat_server": tomcatServerIp
-                        "mysql_server" : mysqlServerIp
+                        "tomcat_server": tomcatServerIp,
+                        "mysql_server" : mysqlServerIp,
                         "maven_server" : mavenServerIp
                     ]
                
