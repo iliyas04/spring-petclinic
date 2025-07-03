@@ -1,12 +1,61 @@
-- name: Install maven, mysql, tomcat
+---
+- name: Install Java 17 and Maven
   hosts: all
   become: yes
+
+  vars:
+    java_package: openjdk-17-jdk
+    maven_version: "3.9.6"
+    maven_download_url: "https://downloads.apache.org/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+    maven_install_dir: "/opt/maven"
+    maven_symlink: "/usr/bin/mvn"
+
   tasks:
-    - name: Update apt package cache
+    - name: Install Java 17
       apt:
+        name: "{{ java_package }}"
+        state: present
         update_cache: yes
 
-  roles:
-    - maven
-    - mysql
-    - tomcat
+    - name: Create Maven install directory
+      file:
+        path: "{{ maven_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download Maven binary
+      get_url:
+        url: "{{ maven_download_url }}"
+        dest: "/tmp/apache-maven-{{ maven_version }}.tar.gz"
+
+    - name: Extract Maven archive
+      unarchive:
+        src: "/tmp/apache-maven-{{ maven_version }}.tar.gz"
+        dest: "{{ maven_install_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+
+    - name: Create symlink for Maven
+      file:
+        src: "{{ maven_install_dir }}/bin/mvn"
+        dest: "{{ maven_symlink }}"
+        state: link
+        force: yes
+
+    - name: Verify Java version
+      command: java -version
+      register: java_output
+      ignore_errors: true
+
+    - name: Print Java version
+      debug:
+        msg: "{{ java_output.stderr_lines }}"
+
+    - name: Verify Maven version
+      command: mvn -version
+      register: maven_output
+      ignore_errors: true
+
+    - name: Print Maven version
+      debug:
+        msg: "{{ maven_output.stdout_lines }}"
