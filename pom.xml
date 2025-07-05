@@ -207,12 +207,19 @@
             </goals>
             <phase>validate</phase>
             <configuration>
-              <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>
-              <sourceDirectories>${basedir}</sourceDirectories>
-              <includes>**/*</includes>
-              <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class</excludes>
-              <propertyExpansion>config_loc=${basedir}/src/checkstyle/</propertyExpansion>
-            </configuration>
+            <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation>
+            <sourceDirectories>${basedir}</sourceDirectories>
+            <includes>**/*</includes>
+            <excludes>
+              **/.git/**,
+              **/.idea/**,
+              **/target/**,
+              **/.flattened-pom.xml,
+              **/*.class,
+              **/.terraform/**
+            </excludes>
+            <propertyExpansion>config_loc=${basedir}/src/checkstyle/</propertyExpansion>
+          </configuration>
           </execution>
         </executions>
       </plugin>
